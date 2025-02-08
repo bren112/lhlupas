@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import DetalhesNoticia from "./pages/DetalhesNoticia";
 import Noticias from "./pages/Noticias";
 import Todas from "./pages/Todas";
+import Footer from "./components/footer";
 function App() {
   return (
     <BrowserRouter>
@@ -13,10 +14,11 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/d" element={<DetalhesNoticia />} />
-          <Route path="/de" element={<Noticias />} />
+          <Route path="/criar" element={<DetalhesNoticia />} />
+          <Route path="/gerenciar" element={<Noticias />} />
           <Route path="/lupas" element={<Todas />} />
          </Routes>
+         <Footer />
       </div>
     </BrowserRouter>
   );

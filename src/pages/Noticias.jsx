@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabase/supabase';
-import './Noticias.css';
 
 function Noticias() {
   const [produtos, setProdutos] = useState([]);
@@ -61,6 +60,96 @@ function Noticias() {
 
   return (
     <div className="noticias">
+      <style>
+        {`
+          .noticias {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+          }
+
+          h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+          }
+
+          ul {
+            list-style-type: none;
+            padding: 0;
+          }
+
+          li {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          h3 {
+            font-size: 1.2em;
+            color: #444;
+          }
+
+          p {
+            color: #666;
+            margin: 5px 0;
+          }
+
+          button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin: 5px;
+          }
+
+          button:hover {
+            background-color: #0056b3;
+          }
+
+          form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+          }
+
+          form h3 {
+            color: #444;
+            margin-bottom: 15px;
+          }
+
+          input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+          }
+
+          input[type="checkbox"] {
+            margin-right: 10px;
+          }
+
+          button[type="submit"] {
+            background-color: #28a745;
+            border: none;
+          }
+
+          button[type="submit"]:hover {
+            background-color: #218838;
+          }
+        `}
+      </style>
+
       <h2>Produtos</h2>
       <ul>
         {produtos.map((produto) => (

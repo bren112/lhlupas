@@ -155,13 +155,14 @@ function Home() {
                 <p>O carrinho está vazio.</p>
               )}
             </ul>
+            <br />
             <a
               href={gerarMensagemWhatsApp()}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-whatsapp"
             >
-              Enviar no WhatsApp
+              Comprar
             </a>
             <button className="btn-fechar" onClick={fecharModalCarrinho}>
               Fechar
