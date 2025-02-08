@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import DetalhesNoticia from "./pages/DetalhesNoticia";
 import Noticias from "./pages/Noticias";
 import Todas from "./pages/Todas";
-import Footer from "./components/footer";
+import Footer from "./components/Footer";
 function App() {
   return (
     <BrowserRouter>
