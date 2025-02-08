@@ -4,6 +4,7 @@ import Navbar from "./components/navbar";
 import Home from "./pages/Home";
 import DetalhesNoticia from "./pages/DetalhesNoticia";
 import Noticias from "./pages/Noticias";
+import Todas from "./pages/Todas";
 function App() {
   return (
     <BrowserRouter>
@@ -14,6 +15,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/d" element={<DetalhesNoticia />} />
           <Route path="/de" element={<Noticias />} />
+          <Route path="/lupas" element={<Todas />} />
          </Routes>
       </div>
     </BrowserRouter>

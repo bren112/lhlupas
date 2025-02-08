@@ -1,104 +1,214 @@
 import React, { useEffect, useState } from "react";
-import Slider from "react-slick";
 import { supabase } from "../supabase/supabase";
 import "./home.css";
-import img from "./img1.png";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import banner from "./banner.png";
+import { Link } from "react-router-dom";
 
 function Home() {
-  const [produtos, setProdutos] = useState([]);
   const [promocoes, setPromocoes] = useState([]);
+  const [carrinho, setCarrinho] = useState([]);
+  const [modalAberto, setModalAberto] = useState(false);
+  const [produtosAleatorios, setProdutosAleatorios] = useState([]);
 
+  // Carrega as promoções
   useEffect(() => {
-    async function fetchProdutos() {
+    async function fetchPromocoes() {
       try {
-        const { data, error } = await supabase.from("produtos").select("*");
+        const { data, error } = await supabase
+          .from("produtos")
+          .select("*")
+          .eq("promocao", true);
+
         if (error) throw error;
-
-        // Filtrando promoções considerando diferentes formatos (true, 'true', 1)
-        const promoProdutos = data.filter(
-          (produto) => produto.promo === true || produto.promo === 1 || produto.promo === "true"
-        );
-        setPromocoes(promoProdutos);
-
-        // Produtos que NÃO estão em promoção
-        const produtosSemPromocao = data.filter(
-          (produto) => !(produto.promo === true || produto.promo === 1 || produto.promo === "true")
-        );
-        setProdutos(produtosSemPromocao);
+        setPromocoes(data);
       } catch (error) {
-        console.error("Erro ao buscar produtos:", error);
+        console.error("Erro ao buscar promoções:", error);
       }
     }
 
-    fetchProdutos();
+    fetchPromocoes();
   }, []);
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
+  // Carregar produtos aleatórios
+  useEffect(() => {
+    async function fetchProdutosAleatorios() {
+      try {
+        const { data, error } = await supabase
+          .from("produtos")
+          .select("*");
+
+        if (error) throw error;
+
+        // Pegando 3 produtos aleatórios
+        const produtosRandomicos = data.sort(() => Math.random() - 0.5).slice(0, 3);
+        setProdutosAleatorios(produtosRandomicos);
+      } catch (error) {
+        console.error("Erro ao buscar produtos aleatórios:", error);
+      }
+    }
+
+    fetchProdutosAleatorios();
+  }, []);
+
+  // Função para adicionar item ao carrinho
+  const adicionarAoCarrinho = (produto) => {
+    let itensCarrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    itensCarrinho.push(produto);
+    localStorage.setItem("carrinho", JSON.stringify(itensCarrinho));
+    setCarrinho(itensCarrinho);
+  };
+
+  // Função para remover item do carrinho
+  const removerDoCarrinho = (id) => {
+    let itensCarrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    itensCarrinho = itensCarrinho.filter((item) => item.id !== id);
+    localStorage.setItem("carrinho", JSON.stringify(itensCarrinho));
+    setCarrinho(itensCarrinho);
+  };
+
+  // Função para abrir o modal
+  const abrirModalCarrinho = () => {
+    setCarrinho(JSON.parse(localStorage.getItem("carrinho")) || []);
+    setModalAberto(true);
+  };
+
+  // Função para fechar o modal
+  const fecharModalCarrinho = () => {
+    setModalAberto(false);
+  };
+
+  // Função para gerar a mensagem do carrinho
+  const gerarMensagemWhatsApp = () => {
+    let mensagem = "Itens do Carrinho:\n";
+    carrinho.forEach((item) => {
+      mensagem += `${item.nome} - R$ ${item.preco}\n`;
+    });
+    const mensagemCodificada = encodeURIComponent(mensagem);
+    const numeroWhatsApp = "5519983057540"; // Altere para o número do WhatsApp da loja
+    return `https://wa.me/${numeroWhatsApp}?text=${mensagemCodificada}`;
   };
 
   return (
     <div className="home">
-      <img className="imagem1" src={img} alt="Banner" />
-      <h1 id="txthome">ÓCULOS</h1>
+      <header className="banner-container">
+        <img className="banner" src={banner} alt="Banner" />
+      </header>
 
-      <Slider {...settings} className="carousel">
-        {produtos.map((produto) => (
-          <div key={produto.id} className="card">
-            <img
-              src={produto.imagem}
-              alt={produto.nome}
-              className="imagem-produto"
-            />
-            <div className="info">
-              <p className="nome-produto">{produto.nome}</p>
-              <p className="preco-produto">R$ {produto.preco}</p>
-            </div>
-          </div>
-        ))}
-      </Slider>
-
-      <h1 id="txthome">PROMOÇÕES</h1>
-
-      <Slider {...settings} className="carousel">
-        {promocoes.length > 0 ? (
-          promocoes.map((promo) => (
-            <div key={promo.id} className="card promo-card">
-              <img
-                src={promo.imagem}
-                alt={promo.nome}
-                className="imagem-produto"
-              />
-              <div className="info">
-                <p className="nome-produto">{promo.nome}</p>
-                <p className="preco-produto">R$ {promo.preco}</p>
+      <section className="promocoes-section">
+        <h2 className="titulo">🔥 PROMOÇÕES IMPERDÍVEIS 🔥</h2>
+        <div className="produtos-scroll">
+          {promocoes.length > 0 ? (
+            promocoes.map((promo) => (
+              <div key={promo.id} className="produto-card promocao-destaque">
+                <div className="badge-promocao">Promoção!</div>
+                <img
+                  src={promo.imagem}
+                  alt={promo.nome}
+                  className="produto-imagem"
+                />
+                <div className="produto-info">
+                  <h3>{promo.nome}</h3>
+                  <p className="preco-promocao">R$ {promo.preco}</p>
+                  <button
+                    className="btn-comprar"
+                    onClick={() => adicionarAoCarrinho(promo)}
+                  >
+                    Adicionar ao Carrinho
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p>Nenhuma promoção disponível no momento.</p>
-        )}
-      </Slider>
+            ))
+          ) : (
+            <p className="aviso">Nenhuma promoção disponível no momento.</p>
+          )}
+        </div>
+      </section>
+
+      {/* Botão de Carrinho */}
+      <button className="btn-carrinho" onClick={abrirModalCarrinho}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
+          <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+        </svg>
+      </button>
+
+      {/* Modal do Carrinho */}
+      {modalAberto && (
+        <div className="modal-carrinho">
+          <div className="modal-content">
+            <h2>Itens no Carrinho</h2>
+            <ul>
+              {carrinho.length > 0 ? (
+                carrinho.map((item, index) => (
+                  <li key={index}>
+                    <img src={item.imagem} alt={item.nome} width="50" />
+                    <span>{item.nome}</span>
+                    <span>R$ {item.preco}</span>
+                    <button
+                      className="btn-remover"
+                      onClick={() => removerDoCarrinho(item.id)}
+                    >
+                      Remover
+                    </button>
+                  </li>
+                ))
+              ) : (
+                <p>O carrinho está vazio.</p>
+              )}
+            </ul>
+            <a
+              href={gerarMensagemWhatsApp()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-whatsapp"
+            >
+              Enviar no WhatsApp
+            </a>
+            <button className="btn-fechar" onClick={fecharModalCarrinho}>
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Exibindo Produtos Aleatórios */}
+      <section className="produtos-section">
+        <h2 id="centro" className="titulo">🎉 Algumas Lupas 🎉</h2>
+        <div className="produtos-scroll">
+          {produtosAleatorios.length > 0 ? (
+            produtosAleatorios.map((produto) => (
+              <div key={produto.id} className="produto-card">
+                <img
+                  src={produto.imagem}
+                  alt={produto.nome}
+                  className="produto-imagem"
+                />
+                <div className="produto-info">
+                  <h3>{produto.nome}</h3>
+                  <p className="preco-produto">R$ {produto.preco}</p>
+                  <button
+                    className="btn-comprar"
+                    onClick={() => adicionarAoCarrinho(produto)}
+                  >
+                    Adicionar ao Carrinho
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>Sem produtos aleatórios disponíveis.</p>
+          )}
+        </div>
+      </section>
+
+      <div className="vermais">
+        <Link to="/lupas">
+          <br />
+          <br />
+          <button>Ver Todas</button>
+          <br />
+          <br />
+        </Link>
+      </div>
     </div>
   );
 }
