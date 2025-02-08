@@ -8,10 +8,10 @@ function Footer() {
       <div className="footer-content">
         <p>Fale Conosco</p>
         <div className="social-icons">
-          <a href="https://wa.me/123456789" target="_blank" rel="noopener noreferrer">
+          <a href="https://wa.me/5511990072640" target="_blank" rel="noopener noreferrer">
             <FaWhatsapp size={40} color="#25D366" />
           </a>
-          <a href="https://www.instagram.com/seuperfil" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.instagram.com/lupaslh/" target="_blank" rel="noopener noreferrer">
             <FaInstagram size={40} color="#E4405F" />
           </a>
         </div>

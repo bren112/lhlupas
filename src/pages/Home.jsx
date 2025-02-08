@@ -84,7 +84,7 @@ function Home() {
       mensagem += `${item.nome} - R$ ${item.preco}\n`;
     });
     const mensagemCodificada = encodeURIComponent(mensagem);
-    const numeroWhatsApp = "5519983057540"; // Altere para o número do WhatsApp da loja
+    const numeroWhatsApp = "5511990072640"; // Altere para o número do WhatsApp da loja
     return `https://wa.me/${numeroWhatsApp}?text=${mensagemCodificada}`;
   };
 
